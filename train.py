@@ -103,7 +103,7 @@ nb_val_samples = 3000
 print("Loading data...")
 import cPickle as pickle
 
-with open('%s.pkl'%FN0, 'rb') as fp:
+with open('reqData/%s.pkl'%FN0, 'rb') as fp:
     embedding, idx2word, word2idx, glove_idx2idx = pickle.load(fp)
 vocab_size, embedding_size = embedding.shape
 
@@ -112,7 +112,7 @@ print("data1 loaded")
 # In[12]:
 
 
-with open('%s.data.pkl'%FN0, 'rb') as fp:
+with open('reqData/%s.data.pkl'%FN0, 'rb') as fp:
     X, Y = pickle.load(fp)
 
 print("data2 loaded")
@@ -221,7 +221,7 @@ prt('D',X_test[i])
 
 
 from keras.models import Sequential
-from keras.layers.core import Dense, Activation, Dropout, RepeatVector, Merge
+from keras.layers.core import Dense, Activation, Dropout, RepeatVector
 from keras.layers.wrappers import TimeDistributed
 from keras.layers.recurrent import LSTM
 from keras.layers.embeddings import Embedding
