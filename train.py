@@ -100,20 +100,22 @@ nb_val_samples = 3000
 
 # In[11]:
 
-
+print("Loading data...")
 import cPickle as pickle
 
-with open('data/%s.pkl'%FN0, 'rb') as fp:
+with open('%s.pkl'%FN0, 'rb') as fp:
     embedding, idx2word, word2idx, glove_idx2idx = pickle.load(fp)
 vocab_size, embedding_size = embedding.shape
 
+print("data1 loaded")
 
 # In[12]:
 
 
-with open('data/%s.data.pkl'%FN0, 'rb') as fp:
+with open('%s.data.pkl'%FN0, 'rb') as fp:
     X, Y = pickle.load(fp)
 
+print("data2 loaded")
 
 # In[13]:
 
@@ -301,7 +303,7 @@ class SimpleContext(Lambda):
     def compute_mask(self, input, input_mask=None):
         return input_mask[:, maxlend:]
     
-    def get_output_shape_for(self, input_shape):
+    def compute_output_shape(self, input_shape):
         nb_samples = input_shape[0]
         n = 2*(rnn_size - activation_rnn_size)
         return (nb_samples, maxlenh, n)
@@ -329,7 +331,7 @@ model.compile(loss='categorical_crossentropy', optimizer=optimizer)
 # In[32]:
 
 
-get_ipython().run_cell_magic(u'javascript', u'', u'// new Audio("http://www.soundjay.com/button/beep-09.wav").play ()')
+# get_ipython().run_cell_magic(u'javascript', u'', u'// new Audio("http://www.soundjay.com/button/beep-09.wav").play ()')
 
 
 # In[33]:
@@ -364,8 +366,8 @@ inspect_model(model)
 # In[36]:
 
 
-if FN1 and os.path.exists('data/%s.hdf5'%FN1):
-    model.load_weights('data/%s.hdf5'%FN1)
+if FN1 and os.path.exists('%s.hdf5'%FN1):
+    model.load_weights('%s.hdf5'%FN1)
 
 
 # # Test
@@ -390,28 +392,34 @@ def lpadd(x, maxlend=maxlend, eos=eos):
 # In[37]:
 
 
-samples = [lpadd([3]*26)]
-# pad from right (post) so the first maxlend will be description followed by headline
-data = sequence.pad_sequences(samples, maxlen=maxlen, value=empty, padding='post', truncating='post')
+
+# samples = [lpadd([3]*26)]
+# # pad from right (post) so the first maxlend will be description followed by headline
+# data = sequence.pad_sequences(samples, maxlen=maxlen, value=empty, padding='post', truncating='post')
 
 
-# In[38]:
+# # In[38]:
 
 
-np.all(data[:,maxlend] == eos)
+# np.all(data[:,maxlend] == eos)
 
 
-# In[39]:
+# # In[39]:
 
 
-data.shape,map(len, samples)
+# data.shape,map(len, samples)
 
 
-# In[40]:
+# # In[40]:
 
 
-probs = model.predict(data, verbose=0, batch_size=1)
-probs.shape
+# probs = model.predict(data, verbose=0, batch_size=1)
+# probs.shape
+
+
+
+
+
 
 
 # # Sample generation
@@ -597,7 +605,7 @@ def gensamples(skips=2, k=10, batch_size=batch_size, short=True, temperature=1.,
 # In[47]:
 
 
-gensamples(skips=2, batch_size=batch_size, k=10, temperature=1.)
+# gensamples(skips=2, batch_size=batch_size, k=10, temperature=1.)
 
 
 # # Data generator
@@ -708,8 +716,8 @@ def gen(Xd, Xh, batch_size=batch_size, nb_batches=None, nflips=None, model=None,
 # In[51]:
 
 
-r = next(gen(X_train, Y_train, batch_size=batch_size))
-r[0].shape, r[1].shape, len(r)
+# r = next(gen(X_train, Y_train, batch_size=batch_size))
+# r[0].shape, r[1].shape, len(r)
 
 
 # In[52]:
@@ -732,7 +740,7 @@ def test_gen(gen, n=5):
 # In[53]:
 
 
-test_gen(gen(X_train, Y_train, batch_size=batch_size))
+# test_gen(gen(X_train, Y_train, batch_size=batch_size))
 
 
 # test fliping
@@ -740,13 +748,13 @@ test_gen(gen(X_train, Y_train, batch_size=batch_size))
 # In[54]:
 
 
-test_gen(gen(X_train, Y_train, nflips=6, model=model, debug=False, batch_size=batch_size))
+# test_gen(gen(X_train, Y_train, nflips=6, model=model, debug=False, batch_size=batch_size))
 
 
 # In[55]:
 
 
-valgen = gen(X_test, Y_test,nb_batches=3, batch_size=batch_size)
+# valgen = gen(X_test, Y_test,nb_batches=3, batch_size=batch_size)
 
 
 # check that valgen repeats itself after nb_batches
@@ -754,8 +762,8 @@ valgen = gen(X_test, Y_test,nb_batches=3, batch_size=batch_size)
 # In[56]:
 
 
-for i in range(4):
-    test_gen(valgen, n=1)
+# for i in range(4):
+#     test_gen(valgen, n=1)
 
 
 # # Train
@@ -790,8 +798,8 @@ for iteration in range(500):
                            )
     for k,v in h.history.iteritems():
         history[k] = history.get(k,[]) + v
-    with open('data/%s.history.pkl'%FN,'wb') as fp:
+    with open('%s.history.pkl'%FN,'wb') as fp:
         pickle.dump(history,fp,-1)
-    model.save_weights('data/%s.hdf5'%FN, overwrite=True)
+    model.save_weights('%s.hdf5'%FN, overwrite=True)
     gensamples(batch_size=batch_size)
 
