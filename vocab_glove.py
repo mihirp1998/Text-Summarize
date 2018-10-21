@@ -1,14 +1,14 @@
 import cPickle as pickle
 FN0 = 'tokens' # this is the name of the data file which I assume you already have
-with open('signalmedia.pkl', 'rb') as fp:
+with open('data/signalmedia.pkl', 'rb') as fp:
     heads, desc, keywords = pickle.load(fp) # keywords are not used in this project
 seed= 42
 vocab_size = 40000
 embedding_dim = 100
 lower = False
 print(len(heads),len(desc))
-nheads = heads[:]
-ndesc = desc[:]
+nheads = heads[:300000]
+ndesc = desc[:300000]
 #pickle.dump((nheads,ndesc,None),open('tmp.pkl','wb'))
 
 
@@ -44,7 +44,7 @@ word2idx, idx2word = get_idx(vocab, vocabcount)
 
 
 embedding_dim = 100
-fname = 'glove.6B.%dd.txt'%embedding_dim
+fname = 'data/glove.6B.%dd.txt'%embedding_dim
 glove_name = fname
 #glove_n_symbols = wc -l {fname}
 #glove_n_symbols = int(glove_n_symbols[0].split()[0])
@@ -154,9 +154,9 @@ X = [[word2idx[token] for token in d.split()] for d in ndesc]
 print('x',len(X))
 FN = 'vocabulary-embedding'
 #import cPickle as pickle
-with open('%s.pkl'%FN,'wb') as fp:
+with open('300k_%s.pkl'%FN,'wb') as fp:
     pickle.dump((embedding, idx2word, word2idx, glove_idx2idx),fp,-1)
 
 #import cPickle as pickle
-with open('%s.data.pkl'%FN,'wb') as fp:
+with open('300k_%s.data.pkl'%FN,'wb') as fp:
     pickle.dump((X,Y),fp,-1)
