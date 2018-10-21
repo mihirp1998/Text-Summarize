@@ -6,6 +6,7 @@ seed= 42
 vocab_size = 40000
 embedding_dim = 100
 lower = False
+print(len(heads),len(desc))
 nheads = heads[:]
 ndesc = desc[:]
 #pickle.dump((nheads,ndesc,None),open('tmp.pkl','wb'))
@@ -149,7 +150,7 @@ glove_idx2idx = dict((word2idx[w],embedding_idx) for  w, embedding_idx, _ in glo
 Y = [[word2idx[token] for token in headline.split()] for headline in nheads]
 print('y ',len(Y))
 
-X = [[word2idx[token] for token in d.split()] for d in desc]
+X = [[word2idx[token] for token in d.split()] for d in ndesc]
 print('x',len(X))
 FN = 'vocabulary-embedding'
 #import cPickle as pickle

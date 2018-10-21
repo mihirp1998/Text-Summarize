@@ -85,7 +85,7 @@ seed=42
 p_W, p_U, p_dense, p_emb, weight_decay = 0, 0, 0, 0, 0
 optimizer = 'adam'
 LR = 1e-4
-batch_size=64
+batch_size=32
 nflips=10
 
 
